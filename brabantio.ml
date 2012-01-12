@@ -78,8 +78,7 @@ sig
   val show : t -> int -> unit
 end
 
-module Stats : StatsSig =
-struct
+module Stats : StatsSig = struct
   open Game_state
 
   (* Player color, (Wins, Total score) *)
