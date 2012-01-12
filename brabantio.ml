@@ -72,7 +72,7 @@ sig
   
   (** Create a new stats-tracking data structure. *)
   val create : unit -> t
-  (** Update with the result of a game *)
+  (** Update with the result of a game. *)
   val update : t -> Game_state.score -> t
   (** Print the stats out. *)
   val show : t -> int -> unit
@@ -154,6 +154,7 @@ let game_loop (player_1 : Player.player) (player_2 : Player.player)
       go (opponent c)
   in go `Black
 
+(** Run the game loop either interactively, or in a batch mode. *)
 let run_game () =
   let p1 = player_of_player_type !player_1 in
   let p2 = player_of_player_type !player_2 in
