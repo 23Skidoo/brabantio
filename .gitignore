@@ -1,4 +1,5 @@
 _build
+.docdir
 *.native
 *.byte
 *.cmo
