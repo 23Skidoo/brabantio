@@ -1,11 +1,11 @@
-Alpha-beta search in Ocaml
---------------------------
+Alpha-beta pruning in Ocaml
+---------------------------
 
-A simple Othello (aka reversi) [1] implementation that uses alpha-beta search
+A simple Othello (aka reversi) [1] implementation that uses alpha-beta pruning
 for its AI engine.
 
 To build the main executable, run 'ocamlbuild brabantio.native'. This will
-produce an executable 'brabantio.native' file in the current directory.
+produce an executable file 'brabantio.native' in the current directory.
 
 To build the documentation, run 'ocamlbuild .docdir/index.html'.
 
