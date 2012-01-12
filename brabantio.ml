@@ -13,7 +13,7 @@ An implementation of the game Othello (reversi).\n"
 (* Global variables are evil, but these are set only in parse_options, and so
    can be regarded as const. *)
 let player_1 = ref (Human Player.human)
-let player_2 = ref (AI Player.random)
+let player_2 = ref (AI Player.alphabeta_smart)
 let mode = ref Interactive
 
 let player_type_names = ["human"; "random"; "alphabeta"; "alphabeta-smart"]
