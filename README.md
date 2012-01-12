@@ -9,9 +9,9 @@ and choice of heuristic.
 Building
 --------
 
-To build the main executable, run `ocamlbuild brabantio.native`. This will
-produce an executable file `brabantio.native` in the current directory. There
-are no dependencies besides the Ocaml standard library.
+To build the program, run `ocamlbuild brabantio.native`. This will produce an
+executable called `brabantio.native` in the current directory. There are no
+dependencies besides the Ocaml standard library.
 
 To build the documentation, run `ocamlbuild .docdir/index.html`.
 
