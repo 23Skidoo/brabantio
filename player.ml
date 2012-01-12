@@ -29,40 +29,52 @@ let human state color =
 let random state color = 
   list_all_valid_moves state color |> random_elt
 
-let successor color state = 
-  let valid_moves = list_all_valid_moves state color in
-  List.map (fun move -> (move, make_move state color move)) valid_moves
+(** Base module for parametrising Alphabeta.Make. *)
+module HeuristicBase = struct
+  include Game_state
 
-let final color state =
-  let open Alphabeta in
-  let score = current_score state in
-  if List.hd score |> fst = color 
-  then plus_inf else minus_inf
+  let successor color state = 
+    let valid_moves = list_all_valid_moves state color in
+    List.map (fun move -> (move, make_move state color move)) valid_moves
 
-let alphabeta state color =
-  let open Alphabeta in
+  let final color state =
+    let open Alphabeta in
+    let score = current_score state in
+    if List.hd score |> fst = color 
+    then plus_inf else minus_inf
+end
+
+(** Implements a naive heuristic (count-difference). *)
+module HeuristicNaive = struct
+  include HeuristicBase
+
   let eval color state = 
     let score = current_score state in
     (List.assoc color score) - (List.assoc (opponent color) score)
-  in
-  alphabeta successor eval final state color default_search_depth
+end
 
-let weights = 
-  [|
-  [| 120; -20; 20;  5;  5; 20; -20; 120 |];
-  [| -20; -40; -5; -5; -5; -5; -40; -20 |];
-  [|  20;  -5; 15;  3;  3; 15;  -5;  20 |];
-  [|   5;  -5;  3;  3;  3;  3;  -5;   5 |];
-  [|   5;  -5;  3;  3;  3;  3;  -5;   5 |];
-  [|  20;  -5; 15;  3;  3; 15;  -5;  20 |];
-  [| -20; -40; -5; -5; -5; -5; -40; -20 |];
-  [| 120; -20; 20;  5;  5; 20; -20; 120 |];
-  |]
+let alphabeta =
+  let module AlphabetaNaive = Alphabeta.Make (HeuristicNaive) in
+  AlphabetaNaive.alphabeta Alphabeta.default_search_depth
 
-let alphabeta_smart state color = 
-  let open Alphabeta in
-  let color_coerced = (color : player_color :> [`White | `Black | `Empty]) in
-  let eval (color : player_color) state =
+(** Implements a smarter heuristic (weighted count-difference). *)
+module HeuristicSmart = struct
+  include HeuristicBase
+
+  let weights = 
+    [|
+      [| 120; -20; 20;  5;  5; 20; -20; 120 |];
+      [| -20; -40; -5; -5; -5; -5; -40; -20 |];
+      [|  20;  -5; 15;  3;  3; 15;  -5;  20 |];
+      [|   5;  -5;  3;  3;  3;  3;  -5;   5 |];
+      [|   5;  -5;  3;  3;  3;  3;  -5;   5 |];
+      [|  20;  -5; 15;  3;  3; 15;  -5;  20 |];
+      [| -20; -40; -5; -5; -5; -5; -40; -20 |];
+      [| 120; -20; 20;  5;  5; 20; -20; 120 |];
+    |]
+
+  let eval (color : player_color) (state : t) =
+    let color_coerced = (color : player_color :> [`White | `Black | `Empty]) in
     let res = ref 0 in
     iteri state (fun i j contents ->
       let weight = weights.(i).(j) in
@@ -72,5 +84,9 @@ let alphabeta_smart state color =
         | _ -> -weight
       in res := !res + res');
     !res
-  in
-  alphabeta successor eval final state color default_search_depth
+
+end
+
+let alphabeta_smart = 
+  let module AlphabetaSmart = Alphabeta.Make (HeuristicSmart) in
+  AlphabetaSmart.alphabeta Alphabeta.default_search_depth

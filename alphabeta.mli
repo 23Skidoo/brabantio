@@ -1,16 +1,41 @@
 (** Alpha-beta pruning. *)
 
-type successor_fun = (Game_state.player_color -> Game_state.t
-                      -> (Game_state.pos * Game_state.t) list)
-
-type eval_fun = Game_state.player_color -> Game_state.t -> int
-
-type final_value_fun = Game_state.player_color -> Game_state.t -> int
-
+(** A positive value that is larger than anything returned by the evaluation
+    function. *)
 val plus_inf : int
+
+(** Zero minus plus_inf. *)
 val minus_inf : int
+
+(** Default search depth. *)
 val default_search_depth : int
 
-val alphabeta : (successor_fun -> eval_fun -> final_value_fun
-                 -> Game_state.t -> Game_state.player_color -> int
-                 -> Game_state.pos)
+(** Functions that we need from a game state module. See Game_state for an
+    example. *)
+module type GameStateSig = sig
+  type t
+  type pos
+  type player_color
+
+  (** Return the opponent of this player. *)
+  val opponent : player_color -> player_color
+
+  (** Are there any valid moves for this player? *)
+  val any_valid_moves : t -> player_color -> bool
+
+  (** Successor function. *)
+  val successor : player_color -> t -> (pos * t) list
+
+  (** Evaluation function. *)
+  val eval : player_color -> t -> int
+
+  (** Final value function. *)
+  val final : player_color -> t -> int
+
+end
+
+module Make : functor (T : GameStateSig) ->
+sig
+  val alphabeta : int -> T.t -> T.player_color -> T.pos
+end
+
