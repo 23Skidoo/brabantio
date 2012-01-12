@@ -55,7 +55,7 @@ end
 
 let alphabeta =
   let module AlphabetaNaive = Alphabeta.Make (HeuristicNaive) in
-  AlphabetaNaive.alphabeta Alphabeta.default_search_depth
+  AlphabetaNaive.alphabeta ~depth:Alphabeta.default_search_depth
 
 (** Implements a smarter heuristic (weighted count-difference). *)
 module HeuristicSmart = struct
@@ -89,4 +89,4 @@ end
 
 let alphabeta_smart = 
   let module AlphabetaSmart = Alphabeta.Make (HeuristicSmart) in
-  AlphabetaSmart.alphabeta Alphabeta.default_search_depth
+  AlphabetaSmart.alphabeta ~depth:Alphabeta.default_search_depth

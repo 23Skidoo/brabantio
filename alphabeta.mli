@@ -34,8 +34,9 @@ module type GameStateSig = sig
 
 end
 
+(** Given a game state module, produce a . *)
 module Make : functor (T : GameStateSig) ->
 sig
-  val alphabeta : int -> T.t -> T.player_color -> T.pos
+  val alphabeta : ?depth:int -> T.t -> T.player_color -> T.pos
 end
 

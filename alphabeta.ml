@@ -18,7 +18,9 @@ end
 
 module Make (T : GameStateSig) =
 struct
-  let alphabeta (depth : int) (state : T.t) (max_player : T.player_color) =
+  let alphabeta ?(depth:int = default_search_depth) (state : T.t) 
+      (max_player : T.player_color) 
+      =
     let rec go (state : T.t) (color : T.player_color) 
         (depth : int) (alpha : int) (beta : int) =
       let opp = T.opponent color in
