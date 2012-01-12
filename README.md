@@ -3,7 +3,8 @@ Alpha-beta pruning in Ocaml
 
 A simple [Othello][1] (aka reversi) implementation that uses alpha-beta pruning
 for searching the game tree. A functor (parametrised module) is used for
-decoupling the alpha-beta algorithm from the concrete game state implementation.
+decoupling the alpha-beta algorithm from the choice of heuristic and particular
+game state implementation.
 
 Building
 --------
