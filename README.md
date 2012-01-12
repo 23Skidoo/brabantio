@@ -3,8 +3,8 @@ Alpha-beta pruning in Ocaml
 
 A simple [Othello][1] (aka reversi) implementation that uses alpha-beta pruning
 for searching the game tree. A functor (parametrised module) is used for
-decoupling the alpha-beta algorithm from the choice of heuristic and particular
-game state implementation.
+decoupling the alpha-beta algorithm from a particular game state representation
+and choice of heuristic.
 
 Building
 --------
@@ -41,6 +41,7 @@ Rules of the game are described [elsewhere][1].
 Name
 ----
 
-Brabantio is Desdemona's father in Shakespeare's "Othello".
+[Brabantio][2] is Desdemona's father in Shakespeare's "Othello".
 
 [1]: http://en.wikipedia.org/wiki/Reversi
+[2]: http://en.wikipedia.org/wiki/Brabantio
