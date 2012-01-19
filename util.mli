@@ -33,5 +33,5 @@ val map_fst : ('a -> 'b) -> ('a * 'c) -> ('b * 'c)
 (** Apply the function to the second element of a tuple. *)
 val map_snd : ('a -> 'b) -> ('c * 'a) -> ('c * 'b)
 
-(** Deep-copy of a 2-dimensional! array. *)
+(** Deep-copy a 2-dimensional array. *)
 val copy_matrix : 'a array array -> 'a array array

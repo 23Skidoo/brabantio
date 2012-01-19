@@ -34,7 +34,7 @@ module type GameStateSig = sig
 
 end
 
-(** Given a game state module, produce a . *)
+(** Given a game state module, produce a custom alpha-beta search function. *)
 module Make : functor (T : GameStateSig) ->
 sig
   val alphabeta : ?depth:int -> T.t -> T.player_color -> T.pos

@@ -30,7 +30,8 @@ struct
         let successors = T.successor color state in
         if null successors
         then
-          (* NB: Instead of a termination test, we use. *)
+          (* NB: Instead of a termination test, we check if any of the players
+             has any valid moves (see the rules of Othello). *)
           if T.any_valid_moves state opp
           then map_snd (~-) (go state opp (depth-1) (-beta) (-alpha))
           else
@@ -59,5 +60,5 @@ struct
     let (move, _) = go state max_player depth minus_inf plus_inf in
     match move with
     | Some m -> m
-    | None -> failwith "alphabeta: returned an empty move!"    
+    | None -> failwith "alphabeta: no move possible!"
 end

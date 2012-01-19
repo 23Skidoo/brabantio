@@ -28,7 +28,7 @@ val create : unit -> t
 (** Print out the game state. *)
 val show : t -> unit
 
-(** Run a side-effecting function on each cell *)
+(** Run a side-effecting function on each cell. *)
 val iteri : t -> (int -> int -> [`White | `Black | `Empty] -> unit) -> unit
 
 (** What is the current score? *)
