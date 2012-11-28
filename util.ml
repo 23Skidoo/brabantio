@@ -1,4 +1,3 @@
-
 let (<|) f x = f x
 
 let (|>) x f = f x
@@ -6,7 +5,7 @@ let (|>) x f = f x
 let is_whitespace c = c = ' ' || c = '\n' || c = '\t' || c = '\r'
 
 (* No String.map in the standard library :-( *)
-let str_map f s = 
+let str_map f s =
   let len = String.length s in
   begin
     for i = 0 to (len-1) do
@@ -19,11 +18,11 @@ let trim s =
   let buf = Buffer.create (String.length s) in
   let f c = if not (is_whitespace c) then Buffer.add_char buf c in
   begin
-    str_map f s; 
+    str_map f s;
     Buffer.contents buf;
   end
 
-let random_elt l = 
+let random_elt l =
   let len = List.length l in
   let idx = Random.int len in
   List.nth l idx
@@ -49,6 +48,6 @@ let copy_matrix m =
   if l = 0 then m else
     let result = Array.make l m.(0) in
     for i = 0 to l - 1 do
-      result.(i) <- Array.copy m.(i) 
+      result.(i) <- Array.copy m.(i)
     done;
     result

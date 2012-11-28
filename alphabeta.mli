@@ -39,4 +39,3 @@ module Make : functor (T : GameStateSig) ->
 sig
   val alphabeta : ?depth:int -> T.t -> T.player_color -> T.pos
 end
-

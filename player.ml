@@ -5,7 +5,7 @@ open Util
 
 type player = t -> player_color -> pos
 
-let human state color =   
+let human state color =
   let rec go () =
     begin
       print_string <| (string_of_color color) ^ "> ";
@@ -15,9 +15,9 @@ let human state color =
       else
         let pos = pos_of_string inp in
         match pos with
-        | Some pos when is_move_valid state color pos -> 
+        | Some pos when is_move_valid state color pos ->
           pos
-        | _ -> 
+        | _ ->
           print_string "Invalid move.\n";
           go ()
     end in
@@ -26,21 +26,21 @@ let human state color =
     go ();
   end
 
-let random state color = 
+let random state color =
   list_all_valid_moves state color |> random_elt
 
 (** Base module for parametrising Alphabeta.Make. *)
 module HeuristicBase = struct
   include Game_state
 
-  let successor color state = 
+  let successor color state =
     let valid_moves = list_all_valid_moves state color in
     List.map (fun move -> (move, make_move state color move)) valid_moves
 
   let final color state =
     let open Alphabeta in
     let score = current_score state in
-    if List.hd score |> fst = color 
+    if List.hd score |> fst = color
     then plus_inf else minus_inf
 end
 
@@ -48,7 +48,7 @@ end
 module HeuristicNaive = struct
   include HeuristicBase
 
-  let eval color state = 
+  let eval color state =
     let score = current_score state in
     (List.assoc color score) - (List.assoc (opponent color) score)
 end
@@ -61,7 +61,7 @@ let alphabeta =
 module HeuristicSmart = struct
   include HeuristicBase
 
-  let weights = 
+  let weights =
     [|
       [| 120; -20; 20;  5;  5; 20; -20; 120 |];
       [| -20; -40; -5; -5; -5; -5; -40; -20 |];
@@ -87,6 +87,6 @@ module HeuristicSmart = struct
 
 end
 
-let alphabeta_smart = 
+let alphabeta_smart =
   let module AlphabetaSmart = Alphabeta.Make (HeuristicSmart) in
   AlphabetaSmart.alphabeta ~depth:Alphabeta.default_search_depth

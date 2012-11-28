@@ -18,15 +18,15 @@ end
 
 module Make (T : GameStateSig) =
 struct
-  let alphabeta ?(depth:int = default_search_depth) (state : T.t) 
-      (max_player : T.player_color) 
+  let alphabeta ?(depth:int = default_search_depth) (state : T.t)
+      (max_player : T.player_color)
       =
-    let rec go (state : T.t) (color : T.player_color) 
+    let rec go (state : T.t) (color : T.player_color)
         (depth : int) (alpha : int) (beta : int) =
       let opp = T.opponent color in
       match depth with
       | 0 -> (None, T.eval color state)
-      | _ -> 
+      | _ ->
         let successors = T.successor color state in
         if null successors
         then
@@ -39,21 +39,21 @@ struct
         else
           let first_succ = List.hd successors in
           let first_move = fst first_succ in
-          let (_, first_value) = map_snd (~-) (go (snd first_succ) opp 
+          let (_, first_value) = map_snd (~-) (go (snd first_succ) opp
                                                  (depth-1) (-beta) (-alpha))
           in
           let go' ((m, v, a) as seed) (move, state) =
             if v >= beta
             then seed
             else let newAlpha = if v > alpha then v else alpha in
-                 let (_, bv) = map_snd (~-) (go state opp (depth-1) 
-                                               (-beta) (-newAlpha)) 
+                 let (_, bv) = map_snd (~-) (go state opp (depth-1)
+                                               (-beta) (-newAlpha))
                  in
                  if bv > v
                  then (Some move, bv, newAlpha)
                  else (m,v,newAlpha)
           in
-          let (best_move, best_value, _) = List.fold_left go' 
+          let (best_move, best_value, _) = List.fold_left go'
             (Some first_move, first_value, alpha) (List.tl successors)
           in (best_move, best_value)
     in

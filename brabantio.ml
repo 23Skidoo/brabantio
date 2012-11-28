@@ -6,7 +6,7 @@ open Util
 
 type player_type = Human of Player.player | AI of Player.player
 type mode = Interactive | Batch of int
-let usage = 
+let usage =
 "Usage: brabantio [OPTION]...
 An implementation of the game Othello (reversi).\n"
 
@@ -23,8 +23,8 @@ let player_type_of_string (s : string) = match s with
   | "random" -> AI Player.random
   | "alphabeta" -> AI Player.alphabeta
   | "alphabeta-smart" -> AI Player.alphabeta_smart
-  | _ -> let player_type_names_string = 
-           "{ " ^ (String.concat ", " player_type_names) ^ " }" 
+  | _ -> let player_type_names_string =
+           "{ " ^ (String.concat ", " player_type_names) ^ " }"
          in invalid_arg ("Argument must be one of" ^ player_type_names_string)
 
 let player_of_player_type = function
@@ -40,7 +40,7 @@ let set_player (which : [< `First | `Second]) (s : string) =
 let set_mode (i : int) =
   if i > 1 then mode := (Batch i) else ()
 
-let parse_options () = 
+let parse_options () =
   let speclist =
     [("-batch", Arg.Int set_mode, "N - Run N games in batch mode");
      ("-player1", Arg.Symbol (player_type_names, set_player `First)
@@ -65,11 +65,11 @@ let sanity_check () =
 
 (* Statistics for the batch mode. *)
 
-module type StatsSig = 
+module type StatsSig =
 sig
-  (** A data structure for tracking game stats across several matches. *)  
+  (** A data structure for tracking game stats across several matches. *)
   type t
-  
+
   (** Create a new stats-tracking data structure. *)
   val create : unit -> t
   (** Update with the result of a game. *)
@@ -83,7 +83,7 @@ module Stats : StatsSig = struct
 
   (* Player color, (Wins, Total score) *)
   type t = (player_color * (int * int)) list
-  
+
   let create () = [(`Black, (0, 0)); (`White, (0, 0))]
 
   let update (stats : t) score =
@@ -91,16 +91,16 @@ module Stats : StatsSig = struct
       (color, (wins + result, total_score + score))
     in
     let (winner_color, _) as winner = List.nth score 0 in
-    let (loser_color, _) as loser = List.nth score 1 in    
+    let (loser_color, _) as loser = List.nth score 1 in
     let res = [merge_scores winner (List.assoc winner_color stats) 1;
                merge_scores loser (List.assoc loser_color stats) 0] in
     List.sort (descending snd) res
 
   let show (stats : t) n =
-    let print_player_result (player, (wins, score)) =     
-      Printf.printf "%s won %d times, total score %d.\n" 
+    let print_player_result (player, (wins, score)) =
+      Printf.printf "%s won %d times, total score %d.\n"
         (string_of_color player) wins score
-    in 
+    in
     Printf.printf "Played %d games.\n" n;
     print_player_result (List.nth stats 0);
     print_player_result (List.nth stats 1)
@@ -124,27 +124,27 @@ let print_result (score : (Game_state.player_color * int) list) =
   let open Game_state in
   print_endline ((List.hd score |> fst |> string_of_color) ^ " won!");
   print_endline "Final score:";
-  let f (color, points) = 
+  let f (color, points) =
     let msg = (string_of_color color) ^ " : " ^ (string_of_int points) in
-    print_endline ("    " ^ msg) 
+    print_endline ("    " ^ msg)
   in
   List.iter f score
 
-let game_loop (player_1 : Player.player) (player_2 : Player.player) 
+let game_loop (player_1 : Player.player) (player_2 : Player.player)
     (verbosity : [< `Silent | `Verbose]) =
   let open Game_state in
   let is_verbose = verbosity = `Verbose in
   let players = [(`Black, player_1); (`White, player_2)] in
   let state = create () in
-  let rec go color = 
+  let rec go color =
     let color' = next_to_play state color in
     match color' with
-    | None -> 
+    | None ->
       let score = current_score state in
-      if is_verbose then 
+      if is_verbose then
         begin show state; print_result score end;
-      score        
-    | Some c -> 
+      score
+    | Some c ->
       let player = List.assoc c players in
       let move = player state c in
       update state c move;
@@ -158,16 +158,16 @@ let run_game () =
   let p1 = player_of_player_type !player_1 in
   let p2 = player_of_player_type !player_2 in
   match !mode with
-  | Interactive -> 
-    print_banner (); 
+  | Interactive ->
+    print_banner ();
     let _ = game_loop p1 p2 `Verbose in ()
-  | Batch n -> 
+  | Batch n ->
     let stats = ref (Stats.create ()) in
     for i = 1 to n do
       let score = game_loop p1 p2 `Silent in
       stats := Stats.update !stats score
     done;
-    Stats.show !stats n    
+    Stats.show !stats n
 
 (* Program entry point. *)
 
@@ -179,4 +179,4 @@ let () =
     run_game ()
   with
   | Exit | End_of_file -> exit 0
-  | (Invalid_argument s) | (Failure s) -> prerr_endline ("Error: " ^ s)  
+  | (Invalid_argument s) | (Failure s) -> prerr_endline ("Error: " ^ s)
