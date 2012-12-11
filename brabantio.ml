@@ -6,6 +6,7 @@ open Util
 
 type player_type = Human of Player.player | AI of Player.player
 type mode = Interactive | Batch of int
+            | SingleTurn of Game_state.player_color * Game_state.t
 let usage =
 "Usage: brabantio [OPTION]...
 An implementation of the game Othello (reversi).\n"
@@ -15,10 +16,11 @@ An implementation of the game Othello (reversi).\n"
 let player_1 = ref (Human Player.human)
 let player_2 = ref (AI Player.alphabeta_smart)
 let mode = ref Interactive
+let time_limit = ref 30
 
 let player_type_names = ["human"; "random"; "alphabeta"; "alphabeta-smart"]
 
-let player_type_of_string (s : string) = match s with
+let player_type_of_string (s : string) = match (String.lowercase s) with
   | "human" -> Human Player.human
   | "random" -> AI Player.random
   | "alphabeta" -> AI Player.alphabeta
@@ -40,9 +42,28 @@ let set_player (which : [< `First | `Second]) (s : string) =
 let set_mode (i : int) =
   if i > 1 then mode := (Batch i) else ()
 
+let set_single_turn (s : string) =
+  let s_len = String.length s in
+  if s_len < 65
+  then invalid_arg "-single-turn: argument too short"
+  else
+    let color = match String.sub s 0 1 with
+      | "W" -> `White
+      | "B" -> `Black
+      | _   -> invalid_arg "-single-turn: color must be W or B!" in
+    let state = match Game_state.parse (String.sub s 1 64) with
+      | Some st -> st
+      | None    -> invalid_arg "Couldn't parse the game state!"
+    in
+    mode := SingleTurn (color, state)
+
 let parse_options () =
   let speclist =
     [("-batch", Arg.Int set_mode, "N - Run N games in batch mode");
+     ("-single-turn", Arg.String set_single_turn,
+      "COLOR:BOARD - Perform a single turn");
+     ("-time-limit", Arg.Int (fun l -> time_limit := l),
+      "SECONDS - Set AI time limit");
      ("-player1", Arg.Symbol (player_type_names, set_player `First)
        , " - Player 1 (black; default: human)");
      ("-player2", Arg.Symbol (player_type_names, set_player `Second)
@@ -168,6 +189,11 @@ let run_game () =
       stats := Stats.update !stats score
     done;
     Stats.show !stats n
+  | SingleTurn (color, state) ->
+    let open Game_state in
+    print_endline ("Limit: " ^ string_of_int !time_limit);
+    print_endline ("Color: " ^ string_of_color color);
+    show state
 
 (* Program entry point. *)
 

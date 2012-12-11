@@ -25,6 +25,9 @@ val opponent : player_color -> player_color
 (** Initialise a new game state. *)
 val create : unit -> t
 
+(** Parse the game state. *)
+val parse : string -> t option
+
 (** Print out the game state. *)
 val show : t -> unit
 

@@ -150,6 +150,27 @@ let create () =
   s.(3).(3) <- `White; s.(4).(4) <- `White;
   s.(3).(4) <- `Black; s.(4).(3) <- `Black; s
 
+let parse s =
+  if String.length s != 64
+  then None else
+    let all_valid = ref true in
+    let check_valid = function
+      | 'E' | 'X' | 'O' -> ()
+      | _ -> all_valid := false
+    in
+    String.iter check_valid s;
+    if not !all_valid then None else
+      let state = create () in
+      let cell_of_char = function
+        | 'E' -> `Empty
+        | 'X' -> `Black
+        | 'O' -> `White
+        | _   -> invalid_arg "parse: invalid char"
+      in
+      iter_pos (fun (Pos (i,j) as pos) ->
+        set_cell_contents state pos (cell_of_char s.[i*8 + j]));
+      Some state
+
 let show s =
   let string_of_cell c = match c with
     | `Black -> "X"
