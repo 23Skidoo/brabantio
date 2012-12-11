@@ -31,6 +31,9 @@ let string_of_pos (Pos (p0, p1)) = Printf.sprintf "%c%c"
   (Char.code 'a' + p1 |> Char.chr)
   (Char.code '1' + p0 |> Char.chr)
 
+let string_of_pos_single_turn (Pos (p0, p1)) =
+  Printf.sprintf "(%d,%d)" (p0+1) (p1+1)
+
 let string_of_color = function
   | `Black -> "Black"
   | `White -> "White"

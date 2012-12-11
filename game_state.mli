@@ -15,6 +15,8 @@ type score = (player_color * int) list
 val pos_of_string : string -> pos option
 (** Format a position for printing. *)
 val string_of_pos : pos -> string
+(** Format a position for printing (-single-turn mode). *)
+val string_of_pos_single_turn : pos -> string
 
 (** Format the player color. *)
 val string_of_color : player_color -> string

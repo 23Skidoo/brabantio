@@ -191,9 +191,12 @@ let run_game () =
     Stats.show !stats n
   | SingleTurn (color, state) ->
     let open Game_state in
-    print_endline ("Limit: " ^ string_of_int !time_limit);
-    print_endline ("Color: " ^ string_of_color color);
-    show state
+    let open Player in
+    if any_valid_moves state color then
+      let pos = alphabeta_smart state color in
+      print_endline (string_of_pos_single_turn pos)
+    else
+      print_endline "pass"
 
 (* Program entry point. *)
 
