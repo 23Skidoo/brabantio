@@ -15,3 +15,7 @@ val alphabeta : player
 
 (** Use alpha-beta search with a smarter heuristic. *)
 val alphabeta_smart : player
+
+(** Smart alpha-beta search that allows to set search depth. *)
+val alphabeta_smart_depth : ?depth:int -> Game_state.t
+  -> Game_state.player_color -> Game_state.pos

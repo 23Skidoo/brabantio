@@ -174,6 +174,22 @@ let game_loop (player_1 : Player.player) (player_2 : Player.player)
       go (opponent c)
   in go `Black
 
+(** Smart alpha-beta search with a time limit. *)
+let time_limited_search (limit : float) (state : Game_state.t)
+    (color : Game_state.player_color) =
+  let open Player in
+  let soln = ref None in
+  let t_start = Unix.time () in
+  let rec f depth =
+    soln := Some (alphabeta_smart_depth ~depth:depth state color);
+    if (Unix.time () -. t_start) > limit
+    then Thread.exit ()
+    else f (depth+1)
+  in
+  let t = Thread.create f Alphabeta.default_search_depth in
+  Thread.join t;
+  !soln
+
 (** Run the game loop either interactively, or in a batch mode. *)
 let run_game () =
   let p1 = player_of_player_type !player_1 in
@@ -191,10 +207,11 @@ let run_game () =
     Stats.show !stats n
   | SingleTurn (color, state) ->
     let open Game_state in
-    let open Player in
     if any_valid_moves state color then
-      let pos = alphabeta_smart state color in
-      print_endline (string_of_pos_single_turn pos)
+      let mpos = time_limited_search (float_of_int !time_limit) state color in
+      match mpos with
+      | None     -> print_endline "pass"
+      | Some pos -> print_endline (string_of_pos_single_turn pos)
     else
       print_endline "pass"
 

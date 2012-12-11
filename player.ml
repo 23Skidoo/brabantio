@@ -87,6 +87,9 @@ module HeuristicSmart = struct
 
 end
 
+module AlphabetaSmart = Alphabeta.Make (HeuristicSmart)
+
+let alphabeta_smart_depth = AlphabetaSmart.alphabeta
+
 let alphabeta_smart =
-  let module AlphabetaSmart = Alphabeta.Make (HeuristicSmart) in
   AlphabetaSmart.alphabeta ~depth:Alphabeta.default_search_depth
