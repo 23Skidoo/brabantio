@@ -179,15 +179,16 @@ let time_limited_search (limit : float) (state : Game_state.t)
     (color : Game_state.player_color) =
   let open Player in
   let soln = ref None in
-  let t_start = Unix.time () in
+  let time_to_die = ref false in
   let rec f depth =
     soln := Some (alphabeta_smart_depth ~depth:depth state color);
-    if (Unix.time () -. t_start) > limit
+    if !time_to_die
     then Thread.exit ()
     else f (depth+1)
   in
-  let t = Thread.create f Alphabeta.default_search_depth in
-  Thread.join t;
+  let _t = Thread.create f Alphabeta.default_search_depth in
+  Thread.delay limit;
+  time_to_die := true;
   !soln
 
 (** Run the game loop either interactively, or in a batch mode. *)
