@@ -57,8 +57,11 @@ struct
             (Some first_move, first_value, alpha) (List.tl successors)
           in (best_move, best_value)
     in
-    let (move, _) = go state max_player depth minus_inf plus_inf in
-    match move with
-    | Some m -> m
-    | None -> failwith "alphabeta: no move possible!"
+    if depth < 0
+    then failwith "alphabeta: depth must be non-negative!"
+    else
+      let (move, _) = go state max_player depth minus_inf plus_inf in
+      match move with
+      | Some m -> m
+      | None -> failwith "alphabeta: no move possible!"
 end
