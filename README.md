@@ -30,6 +30,20 @@ The program takes the following options:
 * ` -batch n` - Run `n` games non-interactively and print the result. Doesn't
   work when any of the players is human.
 
+* ` -single-turn STATE` - Single turn mode. Given a game state and a player
+  color, output the next move for this player or print "pass" if there is no
+  possible move.
+
+  The STATE argument is an ASCII string of length 65. The first character
+  is W or B, and indicates which player is to move. The remaining characters
+  should be E (for empty) O (for white markers), or X (for black markers). These
+  64 characters describe the board, with the first character referring to the
+  upper left hand corner, the second character referring to the second square
+  from the left on the uppermost row, and so on.
+
+* ` -time-limit n` - Time limit (in seconds) for the single-turn mode. The
+  default is 30.
+
 * `--help`, `-help` - Display a help message.
 
 There are two main modes: batch and interactive. Interactive mode is used for
