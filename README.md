@@ -20,7 +20,7 @@ Usage
 
 The program takes the following options:
 
-* `-player1 PLAYER` - Set the type of the first (i.e. black) player. Possible
+* `-player1 PLAYER` - Set the type of the first (i.e., black) player. Possible
   values: `human`; `random` - picks a random valid move; `alphabeta` -
   alpha-beta pruning with a naive heuristic; `alphabeta-smart` - alpha-beta
   pruning with a smarter heuristic.
