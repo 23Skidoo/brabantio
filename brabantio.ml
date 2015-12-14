@@ -179,10 +179,14 @@ let time_limited_search (limit : float) (state : Game_state.t)
     (color : Game_state.player_color) =
   let open Player in
   let soln = ref None in
-  let t_start = Unix.time () in
+  let t_start = Unix.gettimeofday () in
   let rec f depth =
+    let t0 = Unix.gettimeofday () in
     soln := Some (alphabeta_smart_depth ~depth:depth state color);
-    if (Unix.time () -. t_start) > limit
+    let t1 = Unix.gettimeofday () in
+    let elapsed_last = t1 -. t0 in
+    let elapsed_tot  = t1  -. t_start in
+    if (elapsed_tot +. (elapsed_last *. 5.)) > limit
     then Thread.exit ()
     else f (depth+1)
   in
